@@ -104,7 +104,7 @@ pipeline {
                         ) {
                             // Apply all YAML files in the folder
                             sh 'kubectl cluster-info'
-                            sh 'kubectl delete deploy webapp-depl -n dev-pet'
+                            // sh 'kubectl delete deploy webapp-depl -n dev-pet'
                             sh 'pwd'
                             sh 'ls -lart'
                             sh 'kubectl get pods -n=dev-pet'
