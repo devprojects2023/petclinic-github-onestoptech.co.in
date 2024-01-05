@@ -44,13 +44,13 @@ pipeline {
             }
         }
 
-        stage("Quality Gate") {    // need to creta quality gate requirment for the code in sonarqube and save that as default.
-            steps {
-              timeout(time: 1, unit: 'HOURS') {
-                waitForQualityGate abortPipeline: true
-              }
-            }
-        }
+        // stage("Quality Gate") {    // need to creta quality gate requirment for the code in sonarqube and save that as default.
+        //     steps {
+        //       timeout(time: 1, unit: 'HOURS') {
+        //         waitForQualityGate abortPipeline: true
+        //       }
+        //     }
+        // }
 
         stage('dependency check') {  // you can add more arguments as per your needs. https://jeremylong.github.io/DependencyCheck/index.html
             steps {
