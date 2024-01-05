@@ -120,7 +120,7 @@ pipeline {
 
         post{
             success {
-                emailext attachLog: true, attachmentsPattern: '.zip', body: """'This is to inform you that the Project: ${env.JOB_NAME} has been succeeded.<br/> Here is the Build Number: ${env.BUILD_NUMBER} for your reference.<br/> You can get the details from this URL: ${env.BUILD_URL} and also I have attached the build cosole log, please take a look. Thanks.'""", compressLog: true, mimeType: 'text/html', recipientProviders: [buildUser()], replyTo: 'devpay2022@gmail.com', subject: "'This is the Build Status of last Jenkins job: ${currentBuild.result}'", to: 'devpay2022@gmail.com'
+                emailext attachLog: true, attachmentsPattern: '.zip', body: """This is to inform you that the Project: ${env.JOB_NAME} has been succeeded.<br/> Here is the Build Number: ${env.BUILD_NUMBER} for your reference.<br/> You can get the details from this URL: ${env.BUILD_URL} and also I have attached the build cosole log, please take a look. Thanks.""", compressLog: true, mimeType: 'text/html', recipientProviders: [buildUser()], replyTo: 'devpay2022@gmail.com', subject: "This is the Build Status of last Jenkins job: ${currentBuild.result}", to: 'devpay2022@gmail.com'
                 
                 // mail bcc: '', body: """'Project: ${env.JOB_NAME}<br/> Build Number: ${env.BUILD_NUMBER}<br/> URL: ${env.BUILD_URL}'""", cc: '', from: '', replyTo: '', subject: "'${currentBuild.result}'", to: 'devpay2022@gmail.com'
                 
