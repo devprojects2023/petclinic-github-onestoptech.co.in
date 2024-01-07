@@ -7,7 +7,7 @@ metadata:
   name: mypv
 spec:
   capacity:
-    storage: 1Gi
+    storage: 2Gi
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
@@ -16,8 +16,6 @@ spec:
   hostPath:
     path: "/root/pet/project-spring-petclinic/mysql-data"
    
-
-
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

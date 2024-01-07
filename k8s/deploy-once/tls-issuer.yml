@@ -1,7 +1,7 @@
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
-  name: letsencrypt-nginx  
+  name: letsencrypt-nginx-cert  
   namespace: dev-pet
 spec:
   acme:

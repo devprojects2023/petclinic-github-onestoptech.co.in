@@ -20,6 +20,7 @@ pipeline {
         stage('git checkout') {
             steps {
                 // git branch: 'main', credentialsId: 'Git-Credential', url: ''   // use this for private repo
+                // git branch: 'main', credentialsId: 'Git-Credential', url: 'https://github.com/devprojects2023/petclinic-github-onestoptech.co.in.git'
                 git branch: 'main', url: 'https://github.com/devprojects2023/petclinic-github-onestoptech.co.in.git'
                 }
         }
@@ -38,7 +39,7 @@ pipeline {
         stage('sonarqube analisis') {
             steps {
                 withSonarQubeEnv('sonar-api') {
-                    sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=Java -Dsonar.projectKey=Java -Dsonar.java.binaries=."
+                    sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=Java-petclinic -Dsonar.projectKey=Java-petclinic -Dsonar.java.binaries=."
                   
                 }
             }
@@ -52,7 +53,7 @@ pipeline {
         //     }
         // }
 
-        stage('dependency check') {  // you can add more arguments as per your needs. https://jeremylong.github.io/DependencyCheck/index.html
+        stage('dependency check') {  // you can add more arguments as per your needs. https://jeremylong.github.io/DependencyCheck/dependency-check-cli/arguments.html
             steps {
                 dependencyCheck additionalArguments: '--scan ./ --format XML --out ./', odcInstallation: 'dependency-check'
                     dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
@@ -76,6 +77,12 @@ pipeline {
                 }    
         }
 
+        stage('trivy'){   // it will scan the image.
+            steps{
+                sh "trivy image --severity HIGH,CRITICAL $DOCKER_HUB_REPO/$IMAGE_NAME:$TAG_NAME" 
+            }
+        }
+
         stage('Push to Docker-hub Registry') {
             steps {
                 script {
@@ -85,11 +92,6 @@ pipeline {
                         sh "docker push $DOCKER_HUB_REPO/$IMAGE_NAME:$TAG_NAME"
                         } 
                 }
-            }
-        }
-        stage('trivy'){   // it will scan the image.
-            steps{
-                sh "trivy image --severity HIGH,CRITICAL $DOCKER_HUB_REPO/$IMAGE_NAME:$TAG_NAME" 
             }
         }
 
@@ -119,16 +121,16 @@ pipeline {
     }
 
         post{
-            success {
-                emailext attachLog: true, attachmentsPattern: '.zip', body: """This is to inform you that the Project: ${env.JOB_NAME} has been succeeded.<br/> Here is the Build Number: ${env.BUILD_NUMBER} for your reference.<br/> You can get the details from this URL: ${env.BUILD_URL} and also I have attached the build cosole log, please take a look. Thanks.""", compressLog: true, mimeType: 'text/html', recipientProviders: [buildUser()], replyTo: 'devpay2022@gmail.com', subject: "This is the Build Status of last Jenkins job: ${currentBuild.result}", to: 'devpay2022@gmail.com'
+            success { //Jenkins Admin <redm4859@gmail.com>  needs to be set in "System Admin e-mail address" under Jenkins url from Manage Jenkins
+                emailext attachLog: true, attachmentsPattern: '.zip', body: """This is to inform you that the Project: ${env.JOB_NAME} has been succeeded.<br/> Here is the Build Number: ${env.BUILD_NUMBER} for your reference.<br/> You can get the details from this URL: ${env.BUILD_URL} and also I have attached the build console log, please take a look. Thanks.""", compressLog: true, mimeType: 'text/html', recipientProviders: [buildUser()], replyTo: 'devpay2022@gmail.com', subject: "This is the Build Status of last Jenkins job: ${currentBuild.result}", to: 'devpay2022@gmail.com'
                 
                 // mail bcc: '', body: """'Project: ${env.JOB_NAME}<br/> Build Number: ${env.BUILD_NUMBER}<br/> URL: ${env.BUILD_URL}'""", cc: '', from: '', replyTo: '', subject: "'${currentBuild.result}'", to: 'devpay2022@gmail.com'
                 
             }
 
     
-            failure {
-                emailext attachLog: true, attachmentsPattern: '.zip', body: """Hello,<br/> This is to inform you that the Project: ${env.JOB_NAME} has been failed.<br/> Here is the Build Number: ${env.BUILD_NUMBER} for your reference.<br/> You can get the details from this URL: ${env.BUILD_URL} and also I have attached the build cosole log, please take a look. Thanks.""", compressLog: true, mimeType: 'text/html', recipientProviders: [buildUser()], replyTo: 'devpay2022@gmail.com', subject: "This is the Build Status of last Jenkins job: ${currentBuild.result}", to: 'devpay2022@gmail.com'
+            failure {  //Jenkins Admin <redm4859@gmail.com>  needs to be set in "System Admin e-mail address" under Jenkins url from Manage Jenkins
+                emailext attachLog: true, attachmentsPattern: '.zip', body: """Hello,<br/> This is to inform you that the Project: ${env.JOB_NAME} has been failed.<br/> Here is the Build Number: ${env.BUILD_NUMBER} for your reference.<br/> You can get the details from this URL: ${env.BUILD_URL} and also I have attached the build console log, please take a look. Thanks.""", compressLog: true, mimeType: 'text/html', recipientProviders: [buildUser()], replyTo: 'devpay2022@gmail.com', subject: "This is the Build Status of last Jenkins job: ${currentBuild.result}", to: 'devpay2022@gmail.com'
                 
                 // mail bcc: '', body: """'Project: ${env.JOB_NAME}<br/> Build Number: ${env.BUILD_NUMBER}<br/> URL: ${env.BUILD_URL}'""", cc: '', from: '', replyTo: '', subject: "'${currentBuild.result}'", to: 'devpay2022@gmail.com'
                 

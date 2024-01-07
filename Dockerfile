@@ -13,12 +13,15 @@
 
 # # Build the application
 # # RUN mvn clean install -DskipTests -Dcheckstyle.skip
-# RUN mvn package -DskipTests
+# RUN mvn package -DskipTests -Dcheckstyle.skip
 
 # EXPOSE 8080
 
+# # Copy the JAR file into the image
+# COPY target/spring-petclinic-3.2.0-SNAPSHOT.jar /usr/src/app
+
 # # Set the entry point for the application
-# CMD ["java", "-Dspring.profiles.active=mysql", "-jar", "target/spring-petclinic-3.2.0-SNAPSHOT.jar"]
+# CMD ["java", "-Dspring.profiles.active=mysql", "-jar", "/usr/src/app/target/spring-petclinic-3.2.0-SNAPSHOT.jar"]
 ##------------------------------------------------------------------------------------------------------------------#
 
 
